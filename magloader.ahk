@@ -12,28 +12,38 @@ Gui, Add, Edit, w50 h19 x30 y260 vTotalRounds Left,
 ; GUI add notes, x100, is the pos, y30 is the pos, w90 is the width of the text box, h20 is the height of the text box
 ; vMYBUTTON is the variable the input will be stored into. i dont think there is any input from a button, so this might  be pointless
 ;gDOUBLE calls a subroutine by the name DOUBLE, number is the text we entered.
-Gui, Add, Button, x130 y30 w120 h25 vMYBUTTON gDOUBLE ,Submit Round info
+Gui, Add, Button, x130 y30 w120 h25 vSubmitButton gStoreMag ,Submit Round info
 
 return
 
-DOUBLE:
+StoreMag:
 {
-Gui, Submit, NoHide
-numObject := {orNumber: NUMBER , dubNumber: NUMBER}
-numObject.dubNumber := 2*NUMBER
-output := numObject.dubNumber*2
-msgbox,,Result, The result is %output%
+Gui, Submit, Hide
+magObject := {group1: firstGroup , group2: secondGroup , group3: thirdGroup , groupL: LastGroup, total: TotalRounds}
+MsgBox % "Mag object first group is " . magObject.group1
 return
 }
 
-GuiClose:
-ExitApp
+;StoreClickAreas:
+;{
+;Gui, Submit, Hide
+;clicksObject := {group1: firstGroup , group2: secondGroup , group3: thirdGroup , groupL: LastGroup, total: TotalRounds}
+;return
+;}
 
 
-^+x::
+F2::
 MouseGetPos, PosX, PosY
 Send, +{LButton down}
 MouseMove, XVal, YVal
 Send, +{LButton up}
 MouseMove, %PosX%, %PosY%
+return
+
+
+GuiClose:
+ExitApp
+
+F12::
+ExitApp
 return
