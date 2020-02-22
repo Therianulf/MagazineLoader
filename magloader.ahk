@@ -1,3 +1,9 @@
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+; #Warn  ; Enable warnings to assist with detecting common errors.
+SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
+SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
+
+
 Gui, Show , w260 h300, Magazine Loader
 Gui, Add, Text, x20 y10 w90 Left, Input how many in first group 
 Gui, Add, Edit, w50 h19 x30 y40 vfirstGroup Left,
@@ -24,12 +30,12 @@ MsgBox % "Mag object first group is " . magObject.group1
 return
 }
 
-;StoreClickAreas:
-;{
-;Gui, Submit, Hide
-;clicksObject := {group1: firstGroup , group2: secondGroup , group3: thirdGroup , groupL: LastGroup, total: TotalRounds}
-;return
-;}
+StoreClickAreas:
+{
+Gui, Submit, Hide
+clicksObject := {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}}
+return
+}
 
 
 F2::
