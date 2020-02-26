@@ -5,9 +5,25 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 clickObject := {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}}
 
-clickObject.AmmoArray.x.Push(22)
-clickObject.AmmoArray.y.Push(33)
+;MsgBox % "object inside of object " . clickObject.AmmoArray.x[1]
+;MsgBox % "object inside of object " . clickObject.AmmoArray.y[1]
+
+~LButton::
+KeyWait, LButton  ; Wait for user to physically release it.
+MouseGetPos, xpos, ypos 
+clickObject.AmmoArray.x.Push(xpos)
+clickObject.AmmoArray.y.Push(ypos)
+
+MsgBox % "our Xpos is: " . clickObject.AmmoArray.x[clickObject.AmmoArray.x.MaxIndex()] . " our Ypos is: " . clickObject.AmmoArray.y[clickObject.AmmoArray.y.MaxIndex()]
+return
+
+F11::
+for index, value in clickObject.AmmoArray.x
+{
+MsgBox % "index number " . index . " is " . value
+}
 
 
-MsgBox % "object inside of object " . clickObject.AmmoArray.x[1]
-MsgBox % "object inside of object " . clickObject.AmmoArray.y[1]
+F12::
+ExitApp
+return
