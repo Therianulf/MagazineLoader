@@ -50,6 +50,7 @@ LoadMag(magO, clickO)
 {
 
 
+
 }
 
 ;Run the code again using the same bullet pattern
