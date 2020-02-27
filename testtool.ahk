@@ -3,7 +3,7 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
-clickObject := {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}}
+clickObject := { group1: {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}} , group2: {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}} , group3: {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}} , groupL: {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}} MagPos: {x: 0 , y: 0}}
 
 ;MsgBox % "object inside of object " . clickObject.AmmoArray.x[1]
 ;MsgBox % "object inside of object " . clickObject.AmmoArray.y[1]
