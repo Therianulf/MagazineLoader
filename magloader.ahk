@@ -3,7 +3,8 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
-
+; make a simple gui that will take in our pattern
+MsgBox % "Welcome to the automatic magazine loader. once you close this window another window will open asking for rounds in a group. This may be confusing how it loads the rounds. The last group is the last rounds that will be in your magazine, but the first rounds to load. This is so you can place Tracers or something like that in the last few rounds. Next the first group will be loaded, then the second group, and last the third group. the number entered will be how many of that round to put in before switching to the next group. Total rounds is the capacity of the magazine."
 Gui, Show , w260 h300, Magazine Loader
 Gui, Add, Text, x20 y10 w90 Left, Input how many in first group 
 Gui, Add, Edit, w50 h19 x30 y40 vfirstGroup Left,
@@ -15,40 +16,44 @@ Gui, Add, Text, x20 y180 w90 Left,Input how many in last group
 Gui, Add, Edit, w50 h19 x30 y210 vLastGroup Left,
 Gui, Add, Text, x20 y230 w90 Left,Input how many total
 Gui, Add, Edit, w50 h19 x30 y260 vTotalRounds Left,
-; GUI add notes, x100, is the pos, y30 is the pos, w90 is the width of the text box, h20 is the height of the text box
-; vMYBUTTON is the variable the input will be stored into. i dont think there is any input from a button, so this might  be pointless
-;gDOUBLE calls a subroutine by the name DOUBLE, number is the text we entered.
 Gui, Add, Button, x130 y30 w120 h25 vSubmitButton gStoreMag ,Submit Round info
+return
 
+Instructions:
+Gui, Show , w260 h300, Instructions
+Gui, Add, Text, x20 y10 w90 Left, our next piece of data
+Gui, Add, Edit, w50 h19 x30 y40 vNextData Left,
+Gui, Add, Button, x130 y30 w120 h25 vInstructionButton gPromptUser , Start
 return
 
 StoreMag:
 {
 Gui, Submit, Hide
+Gui, Destroy
 magObject := {group1: firstGroup , group2: secondGroup , group3: thirdGroup , groupL: LastGroup, total: TotalRounds}
 MsgBox % "Mag object first group is " . magObject.group1
+Goto, Instructions
 return
 }
 
-StoreClickAreas:
+PromptUser:
 {
+Gui, Submit, Hide
 clicksObject := {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}}
-MsgBox % "our mag object is still accessable and is " . magObject.group2
+MsgBox % "We now need to save the location of The ammo, The Empty Location were moving it to, and the Ctrl-click popup modal Press F3 to continue"
+KeyWait, F3, D
+MsgBox % "We are now past our key wait code "
 return
 }
 
 
+;Run the code again using the same bullet pattern
 F2::
 MouseGetPos, PosX, PosY
 Send, +{LButton down}
 MouseMove, XVal, YVal
 Send, +{LButton up}
 MouseMove, %PosX%, %PosY%
-return
-
-
-F3::
-gosub, StoreClickAreas
 return
 
 GuiClose:
