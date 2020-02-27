@@ -32,8 +32,8 @@ return
 
 StoreClickAreas:
 {
-Gui, Submit, Hide
 clicksObject := {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}}
+MsgBox % "our mag object is still accessable and is " . magObject.group2
 return
 }
 
@@ -46,6 +46,10 @@ Send, +{LButton up}
 MouseMove, %PosX%, %PosY%
 return
 
+
+F3::
+gosub, StoreClickAreas
+return
 
 GuiClose:
 ExitApp
