@@ -39,21 +39,23 @@ return
 PromptUser:
 {
 Gui, Submit, Hide
-clicksObject := {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}}
+clickObject := { group1: {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}} , group2: {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}} , group3: {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}} , groupL: {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}} MagPos: {x: 0 , y: 0}}
 MsgBox % "We now need to save the location of The ammo, The Empty Location were moving it to, and the Ctrl-click popup modal. if you choose help messages, with each step a popup with come up to help you. Press F3 to continue after closing this window"
 KeyWait, F3, D
 
 return
 }
 
+LoadMag(magO, clickO)
+{
+
+
+}
 
 ;Run the code again using the same bullet pattern
 F2::
-MouseGetPos, PosX, PosY
-Send, +{LButton down}
-MouseMove, XVal, YVal
-Send, +{LButton up}
-MouseMove, %PosX%, %PosY%
+LoadMag(magObject, clickObject)
+
 return
 
 GuiClose:
