@@ -5,8 +5,9 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 ;this is a super hacky version, honestly cause it works and idk if there is any interest in it.
 ;also, silly ahk, arrays start at 0! but ahk thinks they start at 1 so be aware of that
+;todo dynamic groups, easier init proccess, more mags, ammo pile reloads
 Global myClickObject := {ammoPos: {x: [] , y: []}, spacePos: {x: [] , y: []} , magPos: {x: 0 , y: 0}, modalPos: {x: [] , y: []}}
-Global magObject := {group1: 0 , group2: 0 , group3: 0 , groupL: 0, total: 0 , Tutorial: 0}
+Global magObject := {group: [], total: 0 , Tutorial: 0}
 
 MsgBox % "Welcome to the automatic magazine loader by Horkus Porkus"
 Gui, Show , w260 h320, Magazine Loader
@@ -28,10 +29,10 @@ StoreMag:
 {
 Gui, Submit, Hide
 Gui, Destroy
-magObject.group1 := firstGroup
-magObject.group2 := secondGroup
-magObject.group3 := thirdGroup
-magObject.groupL := LastGroup
+magObject.group[1] := firstGroup
+magObject.group[2] := secondGroup
+magObject.group[3] := thirdGroup
+magObject.group[4] := LastGroup
 magObject.total := TotalRounds
 magObject.Tutorial := HelpMessages
 Goto, Main
@@ -40,79 +41,90 @@ return
 }
 
 Main:
-MsgBox % "inside of clickstore, mag first, press f5 mag object is " . magObject.group1
-KeyWait, F5, D
+MsgBox % "inside of main, our magobject total rounds: " . magObject.total . " our first group " . magObject.group[1] . " our second group " . magObject.group[2] . " our third group " . magObject.group[3] . " our last group " . magObject.group[4]
+MsgBox % "mag object max index " . magObject.group.maxIndex()
+mainInc := 1
+
+while (mainInc <= magObject.group.maxIndex())
+{
+if (mainInc < 2){
+MsgBox % "inside of clickstore while, mag first, press f8"
+KeyWait, F8, D
 MouseGetPos, xpos, ypos 
 myClickObject.magPos.x := xpos
 myClickObject.magPos.y := ypos
-MsgBox % "pass 1, mag stored " . myClickObject.magPos.x . " " . myClickObject.magPos.y
+MsgBox % "mag stored press f5 on first cartridge " . myClickObject.magPos.x . " " . myClickObject.magPos.y
+}else{
+MsgBox % "Don't need to store the mag this time, right to press f5 on cartridge"
+}
 KeyWait, F5, D
 MouseGetPos, xpos, ypos 
 myClickObject.ammoPos.x.Push(xpos)
 myClickObject.ammoPos.y.Push(ypos)
-MsgBox % "pass 2, first cartrige stored " . myClickObject.ammoPos.x[1] . " " . myClickObject.ammoPos.y[1]
-KeyWait, F5, D
+MsgBox % "cartridge stored press f6 on space " . myClickObject.ammoPos.x[mainInc] . " " . myClickObject.ammoPos.y[mainInc]
+KeyWait, F6, D
 MouseGetPos, xpos, ypos 
 myClickObject.spacePos.x.Push(xpos)
 myClickObject.spacePos.y.Push(ypos)
-MsgBox % "pass 3, first space stored " . myClickObject.spacePos.x[1] . " " . myClickObject.spacePos.y[1]
-MsgBox % "f5 done, hit f6"
-KeyWait, F6, D
+MsgBox % "space stored, bring up modal and hit f7 to store the modal " . myClickObject.spacePos.x[mainInc] . " " . myClickObject.spacePos.y[mainInc]
+KeyWait, F7, D
 MouseGetPos, xpos, ypos 
 myClickObject.modalPos.x.Push(xpos)
 myClickObject.modalPos.y.Push(ypos)
-MsgBox % "f6 pressed, modal stored " . myClickObject.modalPos.x[1] . " " . myClickObject.modalPos.y[1]
-msgBox % "were done! press f7 to load"
+MsgBox % "modal stored " . myClickObject.modalPos.x[mainInc] . " " . myClickObject.modalPos.y[mainInc]
+if (mainInc > 3){
+msgBox % "were done! press f9 to load"
+}
+mainInc++
+}
 return
 
-
-f7::
+f9::
 gosub, loadMag
 return
 
 
 loadMag:
-
-;inc := 1
-;while (inc <= myClickObject.ammoPos.x.maxIndex()){
-MouseMove, myClickObject.ammoPos.x[1], myClickObject.ammoPos.y[1], 40
-sleep, 400
-send {Ctrl down}
-sleep, 400
-Click, Down
-sleep, 400
-MouseMove, myClickObject.spacePos.x[1], myClickObject.spacePos.y[1], 40
-sleep, 400
-Click, up
-sleep, 400
-send {Ctrl up}
-sleep, 840
-MouseMove, myClickObject.modalPos.x[1], myClickObject.modalPos.y[1], 40
-sleep, 400
-Click
-sleep, 400
-send {BS}
-sleep, 900
-sendplay % magObject.group1
-sleep, 900
-send {right}
-sleep, 100
-send {right}
-sleep, 100
-send {right}
-sleep, 400
-send {enter}
-sleep, 400
-MouseMove, myClickObject.spacePos.x[1], myClickObject.spacePos.y[1], 40
-sleep, 400
-click, down
-sleep, 400
-MouseMove, myClickObject.magPos.x, myClickObject.magPos.y, 40
-sleep, 400
-click, up
-
-;inc++
-;}
-
+loadRound(1)
+loadRound(2)
+loadRound(3)
+loadRound(4)
 return
 
+;function to invidual rounds, give it the group were loading
+loadRound(cart){
+MouseMove, myClickObject.ammoPos.x[cart], myClickObject.ammoPos.y[cart], 40
+sleep, 300
+send {Ctrl down}
+sleep, 300
+Click, Down
+sleep, 300
+MouseMove, myClickObject.spacePos.x[cart], myClickObject.spacePos.y[cart], 40
+sleep, 300
+Click, up
+sleep, 300
+send {Ctrl up}
+sleep, 1440
+MouseMove, myClickObject.modalPos.x[cart], myClickObject.modalPos.y[cart], 40
+sleep, 300
+Click
+sleep, 500
+send % magObject.group[cart]
+sleep, 300
+send {right}
+sleep, 100
+send {right}
+sleep, 100
+send {right}
+sleep, 300
+send {enter}
+sleep, 1440
+MouseMove, myClickObject.spacePos.x[cart], myClickObject.spacePos.y[cart], 40
+sleep, 300
+click, down
+sleep, 300
+MouseMove, myClickObject.magPos.x, myClickObject.magPos.y, 40
+sleep, 300
+click, up
+return
+}
