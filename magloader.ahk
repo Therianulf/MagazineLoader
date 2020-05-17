@@ -93,32 +93,42 @@ return
 
 ;function to invidual rounds, give it the group were loading
 loadRound(cart){
+;move mouse to round
 MouseMove, myClickObject.ammoPos.x[cart], myClickObject.ammoPos.y[cart], 40
 sleep, 300
+;control click the round to split
 send {Ctrl down}
 sleep, 300
 Click, Down
 sleep, 300
+;move round to empty space
 MouseMove, myClickObject.spacePos.x[cart], myClickObject.spacePos.y[cart], 40
 sleep, 300
+;release mouse and ctrl to bring up the modal
 Click, up
 sleep, 300
 send {Ctrl up}
+;wait a bit for modal to pop, then move mouse to modal num input
 sleep, 1440
 MouseMove, myClickObject.modalPos.x[cart], myClickObject.modalPos.y[cart], 40
 sleep, 300
+;click input spot
 Click
 sleep, 500
+;input how many rounds we want in this group
 send % magObject.group[cart]
 sleep, 300
+;move the cursor right to prevent bug of enter giving only the rounds before cursor.
 send {right}
 sleep, 100
 send {right}
 sleep, 100
 send {right}
 sleep, 300
+;submit and wait for modal to close
 send {enter}
 sleep, 1440
+;put round into mag.
 MouseMove, myClickObject.spacePos.x[cart], myClickObject.spacePos.y[cart], 40
 sleep, 300
 click, down
