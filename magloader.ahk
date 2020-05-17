@@ -109,8 +109,21 @@ Click, up
 sleep, 300
 send {Ctrl up}
 ;wait a bit for modal to pop, then move mouse to modal num input
+;since the modal likes to move around for some fucking reason, we need to find the correct pixels and target them.
+;we will search within a 100 x 100 rectangle centered on the input spot given by the user,
+xstart := myClickObject.modalPos.x[cart] - 50
+ystart := myClickObject.modalPos.y[cart] - 50 
+xend := myClickObject.modalPos.x[cart] + 50
+yend := myClickObject.modalPos.y[cart] + 50
+targetx := 0
+targety := 0
+pixelSearch,targetx,targety,xstart,ystart,xend,yend,0x4f5857,10,fast
+if ErrorLevel
+    MsgBox % "Modal was not found, it may have moved itself outside of targeting range."
+else
+    ;MsgBox, A color within 10 shades of variation was found at X%targetx% Y%targety%.
 sleep, 1440
-MouseMove, myClickObject.modalPos.x[cart], myClickObject.modalPos.y[cart], 40
+MouseMove, targetx, targety, 40
 sleep, 300
 ;click input spot
 Click
