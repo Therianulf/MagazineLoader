@@ -1,10 +1,14 @@
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
-SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
+SendMode input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
-; make a simple gui that will take in our pattern
-MsgBox % "Welcome to the automatic magazine loader. once you close this window another window will open asking for rounds in a group. This may be confusing how it loads the rounds. The last group is the last rounds that will be in your magazine, but the first rounds to load. This is so you can place Tracers or something like that in the last few rounds. Next the first group will be loaded, then the second group, and last the third group. the number entered will be how many of that round to put in before switching to the next group. Total rounds is the capacity of the magazine."
+;this is a super hacky version, honestly cause it works and idk if there is any interest in it.
+;also, silly ahk, arrays start at 0! but ahk thinks they start at 1 so be aware of that
+Global myClickObject := {ammoPos: {x: [] , y: []}, spacePos: {x: [] , y: []} , magPos: {x: 0 , y: 0}, modalPos: {x: [] , y: []}}
+Global magObject := {group1: 0 , group2: 0 , group3: 0 , groupL: 0, total: 0 , Tutorial: 0}
+
+MsgBox % "Welcome to the automatic magazine loader by Horkus Porkus"
 Gui, Show , w260 h320, Magazine Loader
 Gui, Add, Text, x20 y10 w90 Left, Input how many in first group 
 Gui, Add, Edit, w50 h19 x30 y40 vfirstGroup Left,
@@ -20,48 +24,95 @@ Gui, Add, CheckBox, x30 y280 vHelpMessages Checked, Would you like help messages
 Gui, Add, Button, x130 y30 w120 h25 vSubmitButton gStoreMag ,Submit Round info
 return
 
-Instructions:
-Gui, Show , w260 h300, Instructions
-Gui, Add, Text, x20 y10 w90 Left, our next piece of data
-Gui, Add, Edit, w50 h19 x30 y40 vNextData Left,
-Gui, Add, Button, x130 y30 w120 h25 vInstructionButton gPromptUser , Start
-return
-
 StoreMag:
 {
 Gui, Submit, Hide
 Gui, Destroy
-magObject := {group1: firstGroup , group2: secondGroup , group3: thirdGroup , groupL: LastGroup, total: TotalRounds , Tutorial: HelpMessages}
-Goto, Instructions
+magObject.group1 := firstGroup
+magObject.group2 := secondGroup
+magObject.group3 := thirdGroup
+magObject.groupL := LastGroup
+magObject.total := TotalRounds
+magObject.Tutorial := HelpMessages
+Goto, Main
 return
-}
-
-PromptUser:
-{
-Gui, Submit, Hide
-clickObject := { group1: {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}} , group2: {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}} , group3: {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}} , groupL: {AmmoArray: {x: [] , y: []} , modalPos: {x: 0 , y: 0}} MagPos: {x: 0 , y: 0}}
-MsgBox % "We now need to save the location of The ammo, The Empty Location were moving it to, and the Ctrl-click popup modal. if you choose help messages, with each step a popup with come up to help you. Press F3 to continue after closing this window"
-KeyWait, F3, D
-
-return
-}
-
-LoadMag(magO, clickO)
-{
-
-
 
 }
 
-;Run the code again using the same bullet pattern
-F2::
-LoadMag(magObject, clickObject)
+Main:
+MsgBox % "inside of clickstore, mag first, press f5 mag object is " . magObject.group1
+KeyWait, F5, D
+MouseGetPos, xpos, ypos 
+myClickObject.magPos.x := xpos
+myClickObject.magPos.y := ypos
+MsgBox % "pass 1, mag stored " . myClickObject.magPos.x . " " . myClickObject.magPos.y
+KeyWait, F5, D
+MouseGetPos, xpos, ypos 
+myClickObject.ammoPos.x.Push(xpos)
+myClickObject.ammoPos.y.Push(ypos)
+MsgBox % "pass 2, first cartrige stored " . myClickObject.ammoPos.x[1] . " " . myClickObject.ammoPos.y[1]
+KeyWait, F5, D
+MouseGetPos, xpos, ypos 
+myClickObject.spacePos.x.Push(xpos)
+myClickObject.spacePos.y.Push(ypos)
+MsgBox % "pass 3, first space stored " . myClickObject.spacePos.x[1] . " " . myClickObject.spacePos.y[1]
+MsgBox % "f5 done, hit f6"
+KeyWait, F6, D
+MouseGetPos, xpos, ypos 
+myClickObject.modalPos.x.Push(xpos)
+myClickObject.modalPos.y.Push(ypos)
+MsgBox % "f6 pressed, modal stored " . myClickObject.modalPos.x[1] . " " . myClickObject.modalPos.y[1]
+msgBox % "were done! press f7 to load"
+return
+
+
+f7::
+gosub, loadMag
+return
+
+
+loadMag:
+
+;inc := 1
+;while (inc <= myClickObject.ammoPos.x.maxIndex()){
+MouseMove, myClickObject.ammoPos.x[1], myClickObject.ammoPos.y[1], 40
+sleep, 400
+send {Ctrl down}
+sleep, 400
+Click, Down
+sleep, 400
+MouseMove, myClickObject.spacePos.x[1], myClickObject.spacePos.y[1], 40
+sleep, 400
+Click, up
+sleep, 400
+send {Ctrl up}
+sleep, 840
+MouseMove, myClickObject.modalPos.x[1], myClickObject.modalPos.y[1], 40
+sleep, 400
+Click
+sleep, 400
+send {BS}
+sleep, 900
+sendplay % magObject.group1
+sleep, 900
+send {right}
+sleep, 100
+send {right}
+sleep, 100
+send {right}
+sleep, 400
+send {enter}
+sleep, 400
+MouseMove, myClickObject.spacePos.x[1], myClickObject.spacePos.y[1], 40
+sleep, 400
+click, down
+sleep, 400
+MouseMove, myClickObject.magPos.x, myClickObject.magPos.y, 40
+sleep, 400
+click, up
+
+;inc++
+;}
 
 return
 
-GuiClose:
-ExitApp
-
-F12::
-ExitApp
-return
