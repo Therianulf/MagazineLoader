@@ -6,9 +6,9 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;this is a super hacky version, honestly cause it works and idk if there is any interest in it.
 ;also, silly ahk, arrays start at 0! but ahk thinks they start at 1 so be aware of that
 ;todo dynamic groups, easier init proccess, more mags, ammo pile reloads
+start:
 Global myClickObject := {ammoPos: {x: [] , y: []}, spacePos: {x: [] , y: []} , magPos: {x: 0 , y: 0}, modalPos: {x: [] , y: []}}
 Global magObject := {group: [], total: 0 , Tutorial: 0}
-
 MsgBox % "Welcome to the automatic magazine loader by Horkus Porkus"
 Gui, Show , w260 h320, Magazine Loader
 Gui, Add, Text, x20 y10 w90 Left, Input how many in first group 
@@ -183,3 +183,12 @@ sleep, 300
 click, up
 return
 }
+
+#f4::
+exitApp
+return
+
+f12::
+Gui, Destroy
+goto,start
+return
