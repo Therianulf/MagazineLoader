@@ -127,18 +127,18 @@ return
 loadRound(cart){
 ;move mouse to round
 MouseMove, myClickObject.ammoPos.x[cart], myClickObject.ammoPos.y[cart], 40
-sleep, 300
+sleep, 226
 ;control click the round to split
 send {Ctrl down}
-sleep, 300
+sleep, 226
 Click, Down
-sleep, 300
+sleep, 226
 ;move round to empty space
 MouseMove, myClickObject.spacePos.x[cart], myClickObject.spacePos.y[cart], 40
-sleep, 300
+sleep, 226
 ;release mouse and ctrl to bring up the modal
 Click, up
-sleep, 300
+sleep, 226
 send {Ctrl up}
 ;wait a bit for modal to pop, then move mouse to modal num input
 ;since the modal likes to move around for some fucking reason, we need to find the correct pixels and target them.
@@ -154,32 +154,30 @@ if ErrorLevel
     MsgBox % "Modal was not found, it may have moved itself outside of targeting range."
 else
     ;MsgBox, A color within 10 shades of variation was found at X%targetx% Y%targety%.
-sleep, 1440
+sleep, 440
 MouseMove, targetx, targety, 40
-sleep, 300
+sleep, 176
 ;click input spot
 Click
-sleep, 500
+sleep, 180
 ;input how many rounds we want in this group
 send % magObject.group[cart]
-sleep, 300
+sleep, 198
 ;move the cursor right to prevent bug of enter giving only the rounds before cursor.
 send {right}
 sleep, 100
 send {right}
-sleep, 100
-send {right}
-sleep, 300
+sleep, 220
 ;submit and wait for modal to close
 send {enter}
-sleep, 1440
+sleep, 640
 ;put round into mag.
 MouseMove, myClickObject.spacePos.x[cart], myClickObject.spacePos.y[cart], 40
-sleep, 300
+sleep, 276
 click, down
-sleep, 300
+sleep, 276
 MouseMove, myClickObject.magPos.x, myClickObject.magPos.y, 40
-sleep, 300
+sleep, 276
 click, up
 return
 }
