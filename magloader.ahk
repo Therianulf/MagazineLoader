@@ -41,36 +41,44 @@ return
 }
 
 Main:
+if (magObject.Tutorial = 1){
 MsgBox % "inside of main, our magobject total rounds: " . magObject.total . " our first group " . magObject.group[1] . " our second group " . magObject.group[2] . " our third group " . magObject.group[3] . " our last group " . magObject.group[4]
 MsgBox % "mag object max index " . magObject.group.maxIndex()
+}
 mainInc := 1
 
 while (mainInc <= magObject.group.maxIndex())
 {
 if (mainInc < 2){
-MsgBox % "inside of clickstore while, mag first, press f8"
+if (magObject.Tutorial = 1)
+	MsgBox % "inside of clickstore while, mag first, press f8"
 KeyWait, F8, D
 MouseGetPos, xpos, ypos 
 myClickObject.magPos.x := xpos
 myClickObject.magPos.y := ypos
-MsgBox % "mag stored press f5 on first cartridge " . myClickObject.magPos.x . " " . myClickObject.magPos.y
+if (magObject.Tutorial = 1)
+	MsgBox % "mag stored press f5 on first cartridge " . myClickObject.magPos.x . " " . myClickObject.magPos.y
 }else{
-MsgBox % "Don't need to store the mag this time, right to press f5 on cartridge"
+	if (magObject.Tutorial = 1)
+		MsgBox % "Don't need to store the mag this time, right to press f5 on cartridge"
 }
 KeyWait, F5, D
 MouseGetPos, xpos, ypos 
 myClickObject.ammoPos.x.Push(xpos)
 myClickObject.ammoPos.y.Push(ypos)
+if (magObject.Tutorial = 1)
 MsgBox % "cartridge stored press f6 on space " . myClickObject.ammoPos.x[mainInc] . " " . myClickObject.ammoPos.y[mainInc]
 KeyWait, F6, D
 MouseGetPos, xpos, ypos 
 myClickObject.spacePos.x.Push(xpos)
 myClickObject.spacePos.y.Push(ypos)
+if (magObject.Tutorial = 1)
 MsgBox % "space stored, bring up modal and hit f7 to store the modal " . myClickObject.spacePos.x[mainInc] . " " . myClickObject.spacePos.y[mainInc]
 KeyWait, F7, D
 MouseGetPos, xpos, ypos 
 myClickObject.modalPos.x.Push(xpos)
 myClickObject.modalPos.y.Push(ypos)
+if (magObject.Tutorial = 1)
 MsgBox % "modal stored " . myClickObject.modalPos.x[mainInc] . " " . myClickObject.modalPos.y[mainInc]
 if (mainInc > 3){
 msgBox % "were done! press f9 to load"
@@ -83,13 +91,37 @@ f9::
 gosub, loadMag
 return
 
-
 loadMag:
-loadRound(1)
-loadRound(2)
-loadRound(3)
+roundsLoaded := 0
+while (roundsLoaded < magObject.total){
+if (roundsLoaded <= 0 AND magObject.group[4] >= 1){
 loadRound(4)
+roundsLoaded := roundsLoaded + magObject.group[4]
+}
+if (magObject.group[1] >= 1){
+loadRound(1)
+roundsLoaded := roundsLoaded + magObject.group[1]
+if(roundsLoaded >= magObject.total){
+break
+}
+}
+if (magObject.group[2] >= 1){
+loadRound(2)
+roundsLoaded := roundsLoaded + magObject.group[2]
+if(roundsLoaded >= magObject.total){
+break
+}
+}
+if (magObject.group[3] >= 1){
+loadRound(3)
+roundsLoaded := roundsLoaded + magObject.group[3]
+if(roundsLoaded >= magObject.total){
+break
+}
+}
+}
 return
+
 
 ;function to invidual rounds, give it the group were loading
 loadRound(cart){
