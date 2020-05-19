@@ -170,7 +170,7 @@ send {right}
 sleep, 220
 ;submit and wait for modal to close
 send {enter}
-sleep, 640
+sleep, 840
 ;put round into mag.
 MouseMove, myClickObject.spacePos.x[cart], myClickObject.spacePos.y[cart], 40
 sleep, 276
