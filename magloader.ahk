@@ -50,14 +50,16 @@ mainInc := 1
 while (mainInc <= magObject.group.maxIndex())
 {
 if (mainInc < 2){
-if (magObject.Tutorial = 1)
+if (magObject.Tutorial = 1){
 	MsgBox % "inside of clickstore while, mag first, press f8"
+	}
 KeyWait, F8, D
 MouseGetPos, xpos, ypos 
 myClickObject.magPos.x := xpos
 myClickObject.magPos.y := ypos
-if (magObject.Tutorial = 1)
+if (magObject.Tutorial = 1){
 	MsgBox % "mag stored press f5 on first cartridge " . myClickObject.magPos.x . " " . myClickObject.magPos.y
+	}
 }else{
 	if (magObject.Tutorial = 1)
 		MsgBox % "Don't need to store the mag this time, right to press f5 on cartridge"
