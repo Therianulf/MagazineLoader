@@ -9,10 +9,11 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 start:
 Global myClickObject := {ammoPos: {x: [] , y: []}, spacePos: {x: [] , y: []} , magPos: {x: 0 , y: 0}, modalPos: {x: [] , y: []}}
 Global magObject := {group: [], total: 0 , Tutorial: 0}
-MsgBox % "Welcome to the automatic magazine loader by Horkus Porkus."  
-MsgBox % "AutoLoader allows up to 4 kinds of bullets to be loaded into a magazine at a time, with any number of bullets in each group. what it then does is split up the bullets set aside in a stack, with how many it grabs out of the stack being up to the user. I recommend you make a bit of space in the Stash compartment of your Character before actually starting the script"
-MsgBox % "After you activate the script and click OK on the intro,you will be brought into a pop-up window that will ask for for: how many bullets do you want the script to take out of the stack at a time, how many kinds of bullets you will be using, and how many times you want to auto-load. put in how many bullets you want to take out of a stack at a time, and if you have less than 4 kinds of bullets for it, simply leave the remaining groups blank "
-MsgBox % "For the Action Input total, put in how many times you want to do an action, an action being splitting a number of bullets from a stack. for example, if you want to put a bullet of 2 or 4 kinds into a 30-round mag, and you want to do it 1 bullet at a time, the total number of actions should be 30. if you want to put 2 bullets of one kind and 1 bullet of another kind, the total should then be 20."
+MsgBox, 4,, Welcome to the automatic magazine loader by Horkus Porkus.  would you like an introduction to the script?
+IfMsgBox Yes 
+MsgBox AutoLoader allows up to 4 kinds of bullets to be loaded into a magazine at a time, with any number of bullets in each group. what it then does is split up the bullets set aside in a stack, with how many it grabs out of the stack being up to the user. I recommend you make a bit of space in the Stash compartment of your Character before actually starting the script. You are going to be brought into a pop-up window that will ask for for: how many bullets do you want the script to take out of the stack at a time, how many kinds of bullets you will be using, and how many times you want to auto-load. put in how many bullets you want to take out of a stack at a time, and if you have less than 4 kinds of bullets for it, simply leave the remaining groups blank. For the Action Input total, put in how many times you want to do an action, an action being splitting a number of bullets from a stack. for example, if you want to put a bullet of 2 or 4 kinds into a 30-round mag, and you want to do it 1 bullet at a time, the total number of actions should be 30. if you want to put 2 bullets of one kind and 1 bullet of another kind, the total should then be 20.
+IfMsgBox No
+  MsgBox On to why you are here then.
 Gui, Show , w260 h320, Magazine Loader
 Gui, Add, Text, x20 y10 w90 Left, Input how many in first group 
 Gui, Add, Edit, w50 h19 x30 y40 vfirstGroup Left,
@@ -27,7 +28,6 @@ Gui, Add, Edit, w50 h19 x30 y260 vTotalRounds Left,
 Gui, Add, CheckBox, x30 y280 vHelpMessages Checked, Would you like help messages?
 Gui, Add, Button, x130 y30 w120 h25 vSubmitButton gStoreMag ,Submit Round info
 return
-
 StoreMag:
 {
 Gui, Submit, Hide
