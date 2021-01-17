@@ -2,17 +2,14 @@
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-
 ;this is a super hacky version, honestly cause it works and idk if there is any interest in it.
 ;also, silly ahk, arrays start at 0! but ahk thinks they start at 1 so be aware of that
 ;todo dynamic groups, easier init proccess, more mags, ammo pile reloads
+; bug, init doesnt stop you from adding bullets you dont want.
 start:
-Global myClickObject := {ammoPos: {x: [] , y: []}, spacePos: {x: [] , y: []} , magPos: {x: 0 , y: 0}, modalPos: {x: [] , y: []}}
+Global myClickObject := {ammoPos: {x: [] , y: []}, spacePos: {x: [] , y: []} , magPos: {x: 0 , y: 0}}
 Global magObject := {group: [], total: 0 , Tutorial: 0}
-MsgBox % "Welcome to the automatic magazine loader by Horkus Porkus."  
-MsgBox % "AutoLoader allows up to 4 kinds of bullets to be loaded into a magazine at a time, with any number of bullets in each group. what it then does is split up the bullets set aside in a stack, with how many it grabs out of the stack being up to the user. I recommend you make a bit of space in the Stash compartment of your Character before actually starting the script"
-MsgBox % "After you activate the script and click OK on the intro,you will be brought into a pop-up window that will ask for for: how many bullets do you want the script to take out of the stack at a time, how many kinds of bullets you will be using, and how many times you want to auto-load. put in how many bullets you want to take out of a stack at a time, and if you have less than 4 kinds of bullets for it, simply leave the remaining groups blank "
-MsgBox % "For the Action Input total, put in how many times you want to do an action, an action being splitting a number of bullets from a stack. for example, if you want to put a bullet of 2 or 4 kinds into a 30-round mag, and you want to do it 1 bullet at a time, the total number of actions should be 30. if you want to put 2 bullets of one kind and 1 bullet of another kind, the total should then be 20."
+MsgBox % "Welcome to the automatic magazine loader by Horkus Porkus"
 Gui, Show , w260 h320, Magazine Loader
 Gui, Add, Text, x20 y10 w90 Left, Input how many in first group 
 Gui, Add, Edit, w50 h19 x30 y40 vfirstGroup Left,
@@ -45,37 +42,41 @@ return
 
 Main:
 if (magObject.Tutorial = 1){
-MsgBox % "Thank you for looking at the tutorial. There are several things needed to be done so that this script can do its work right, so please read caerfully."
-MsgBox % "First, press F8 while your mouse is over the magazine. The way it works is that it uses the position your mouse is at on the screen and does the movements for you when you ask it to, regardless of whether there is a real mag there or not, so make sure there is one. It will then want the first kind of bullet you want in your mag. Hit F5 when your mouse is over your desired kind of bullet."
-MsgBox % "Hit F6 on the space you want the stack of bullets to split to. Lastly, it will want a way to split the stack. To do this, hold the Ctrl key, drag the bullet group to the empty space, and there will be a pop-up where you will be able to split the stack of bullets. While not moving the popup, put the mouse over the number box and hit F7. Then close out of the window."
-MsgBox % "Repeat steps one and two for any other stacks of bullets. When you have done that for the bullet stacks you want to use, simply hit F9 to start the auto-loading process. Don't touch the mouse or keyboard while its working or it will throw it off and try to start loading the mag as if it just started. The script will stop naturally after it has ran through its actions, though if you want to stop it at any time, press F12 and it will restart on the script. This concludes the tutorial pages. Good luck!"
 MsgBox % "inside of main, our magobject total rounds: " . magObject.total . " our first group " . magObject.group[1] . " our second group " . magObject.group[2] . " our third group " . magObject.group[3] . " our last group " . magObject.group[4]
-MsgBox % "The number of bullet groups is " . magObject.group.maxIndex()
-
+MsgBox % "mag object max index " . magObject.group.maxIndex()
 }
 mainInc := 1
 
 while (mainInc <= magObject.group.maxIndex())
 {
 if (mainInc < 2){
+if (magObject.Tutorial = 1)
+	MsgBox % "inside of clickstore while, mag first, press f8"
 KeyWait, F8, D
 MouseGetPos, xpos, ypos 
 myClickObject.magPos.x := xpos
 myClickObject.magPos.y := ypos
+if (magObject.Tutorial = 1)
+	MsgBox % "mag stored press f5 on first cartridge " . myClickObject.magPos.x . " " . myClickObject.magPos.y
+}else{
+	if (magObject.Tutorial = 1)
+		MsgBox % "Don't need to store the mag this time, right to press f5 on cartridge"
+}
 KeyWait, F5, D
 MouseGetPos, xpos, ypos 
 myClickObject.ammoPos.x.Push(xpos)
 myClickObject.ammoPos.y.Push(ypos)
+if (magObject.Tutorial = 1)
+MsgBox % "cartridge stored press f6 on space " . myClickObject.ammoPos.x[mainInc] . " " . myClickObject.ammoPos.y[mainInc]
 KeyWait, F6, D
 MouseGetPos, xpos, ypos 
 myClickObject.spacePos.x.Push(xpos)
 myClickObject.spacePos.y.Push(ypos)
-KeyWait, F7, D
-MouseGetPos, xpos, ypos 
-myClickObject.modalPos.x.Push(xpos)
-myClickObject.modalPos.y.Push(ypos)
+if (magObject.Tutorial = 1)
+MsgBox % "space stored, bring up modal and hit f7 to store the modal " . myClickObject.spacePos.x[mainInc] . " " . myClickObject.spacePos.y[mainInc]
+if (mainInc > 3){
+msgBox % "were done! press f9 to load"
 }
- 
 mainInc++
 }
 return
@@ -133,26 +134,6 @@ sleep, 226
 Click, up
 sleep, 226
 send {Ctrl up}
-;wait a bit for modal to pop, then move mouse to modal num input
-;since the modal likes to move around for some weird reason, we need to find the correct pixels and target them.
-;we will search within a 100 x 100 rectangle centered on the input spot given by the user,
-xstart := myClickObject.modalPos.x[cart] - 50
-ystart := myClickObject.modalPos.y[cart] - 50 
-xend := myClickObject.modalPos.x[cart] + 50
-yend := myClickObject.modalPos.y[cart] + 50
-targetx := 0
-targety := 0
-pixelSearch,targetx,targety,xstart,ystart,xend,yend,0x4f5857,10,fast
-if ErrorLevel
-    MsgBox % "Modal was not found, it may have moved itself outside of targeting range."
-else
-    ;MsgBox, A color within 10 shades of variation was found at X%targetx% Y%targety%.
-sleep, 440
-MouseMove, targetx, targety, 40
-sleep, 176
-;click input spot
-Click
-sleep, 180
 ;input how many rounds we want in this group
 send % magObject.group[cart]
 sleep, 198
